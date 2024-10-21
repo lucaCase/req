@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:req/components/buttons/default_text_icon_button.dart';
 import 'package:req/components/dropdown_input/dropdown_input.dart';
+import 'package:req/pages/request_pages/auth.dart';
+import 'package:req/pages/request_pages/body.dart';
+import 'package:req/pages/request_pages/headers.dart';
+import 'package:req/pages/request_pages/params.dart';
+import 'package:req/pages/request_pages/scripts.dart';
+import 'package:req/pages/request_pages/tests.dart';
 
 class RequestHandler extends StatelessWidget {
   RequestHandler({super.key}) {
@@ -69,12 +75,12 @@ class RequestHandler extends StatelessWidget {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        const Icon(Icons.nat),
-                        const Icon(Icons.image),
-                        const Icon(Icons.ac_unit_rounded),
-                        const Icon(Icons.dangerous),
-                        const Icon(Icons.add_a_photo),
-                        const Icon(Icons.paragliding_sharp)
+                        Params(),
+                        Body(),
+                        Headers(),
+                        Auth(),
+                        Scripts(),
+                        Tests()
                       ],
                     ),
                   )
