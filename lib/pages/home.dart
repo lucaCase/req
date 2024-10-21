@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:req/components/dropdown_input/dropdown_input.dart';
+import 'package:req/components/buttons/default_text_icon_button.dart';
 import 'package:req/components/request_wrapper/request_handler.dart';
 
 class Home extends StatelessWidget {
@@ -21,16 +21,11 @@ class Home extends StatelessWidget {
                     padding: const EdgeInsets.all(10.0),
                     child: SizedBox(
                       height: 45,
-                      child: TextButton.icon(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () {},
+                      child: DefaultTextIconButton(
                         icon: const Icon(Icons.add, color: Colors.white),
-                        label: const Text("New Request", style: TextStyle(color: Colors.white)),
+                        onPressed: () {},
+                        label: const Text("New Request",
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                   ),
@@ -40,9 +35,7 @@ class Home extends StatelessWidget {
           ),
         ),
       ),
-      body: Center(
-        child: DropdownInput(options: const ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]),
-      ),
+      body: RequestHandler()
     );
   }
 }
