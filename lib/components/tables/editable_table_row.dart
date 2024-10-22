@@ -6,8 +6,24 @@ class EditableTableRow extends StatelessWidget {
   TextEditingController keyController = TextEditingController();
   TextEditingController valueController = TextEditingController();
 
+  static const iBorder = OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.black),
+    borderRadius: BorderRadius.zero
+  );
+  static const textStyle = TextStyle(fontSize: 14);
+
   Map<String, String> getValues() {
     return {keyController.text: valueController.text};
+  }
+
+  InputDecoration inputDecoration(String hintText) {
+    return InputDecoration(
+      isDense: true,
+      hintText: hintText,
+      border: iBorder,
+      focusedBorder: iBorder,
+      enabledBorder: iBorder,
+    );
   }
 
   @override
@@ -16,17 +32,15 @@ class EditableTableRow extends StatelessWidget {
       children: [
         Expanded(
           child: TextField(
-            decoration: const InputDecoration(
-                border: InputBorder.none
-            ),
+            style: textStyle,
+            decoration: inputDecoration("Key"),
             controller: keyController,
           ),
         ),
         Expanded(
           child: TextField(
-            decoration: const InputDecoration(
-              border: InputBorder.none
-            ),
+            style: textStyle,
+            decoration: inputDecoration("Value"),
             controller: valueController,
           ),
         ),
