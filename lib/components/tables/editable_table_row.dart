@@ -7,8 +7,8 @@ class EditableTableRow extends StatelessWidget {
   TextEditingController valueController = TextEditingController();
 
   static const iBorder = OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.black),
-    borderRadius: BorderRadius.zero
+    borderSide: BorderSide(color: Colors.black12, width: 0),
+    borderRadius: BorderRadius.zero,
   );
   static const textStyle = TextStyle(fontSize: 14);
 
@@ -20,6 +20,9 @@ class EditableTableRow extends StatelessWidget {
     return InputDecoration(
       isDense: true,
       hintText: hintText,
+      hintStyle: const TextStyle(
+          color: Colors.black54
+      ),
       border: iBorder,
       focusedBorder: iBorder,
       enabledBorder: iBorder,
