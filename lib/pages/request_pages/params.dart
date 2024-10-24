@@ -20,14 +20,6 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
     EditableTableRow(),
   ];
 
-  Map<String, String> getValues() {
-    Map<String, String> values = {};
-    for (var row in rows) {
-      values.addAll(row.getValues());
-    }
-    return values;
-  }
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -51,9 +43,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        rows = [
-                          EditableTableRow()
-                        ];
+                        rows = [EditableTableRow()];
                       });
                     },
                     icon: const Icon(Icons.delete_outline),
@@ -65,7 +55,8 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                         isBulkEdit = !isBulkEdit;
                       });
                     },
-                    icon: Icon(Icons.edit_note, color: isBulkEdit ? scheme.primary : Colors.black54),
+                    icon: Icon(Icons.edit_note,
+                        color: isBulkEdit ? scheme.primary : Colors.black54),
                     tooltip: "Bulk edit",
                   ),
                   IconButton(
@@ -81,7 +72,9 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
               )
             ],
           ),
-          (!isBulkEdit ? EditableTable(rows: rows) : IndexedTextArea()),
+          (!isBulkEdit
+              ? EditableTable(rows: rows)
+              : IndexedTextArea()),
         ],
       ),
     );
