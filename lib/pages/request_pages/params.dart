@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:req/components/tables/editable_table.dart';
-import 'package:req/components/tables/editable_table_row.dart';
 import 'package:req/components/text_area/indexed_text_area.dart';
+
+import '../../controller/key_store_controller.dart';
 
 class Params extends StatefulWidget {
   Params({super.key});
@@ -16,9 +17,8 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
 
   bool isBulkEdit = false;
 
-  List<EditableTableRow> rows = [
-    EditableTableRow(),
-  ];
+
+  final KeyStoreController _keyStoreController = KeyStoreController();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        rows = [EditableTableRow()];
+                        _keyStoreController.resetRows();
                       });
                     },
                     icon: const Icon(Icons.delete_outline),
@@ -62,7 +62,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        rows.add(EditableTableRow());
+                        _keyStoreController.addRow();
                       });
                     },
                     icon: const Icon(Icons.add),
@@ -73,7 +73,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
             ],
           ),
           (!isBulkEdit
-              ? EditableTable(rows: rows)
+              ? EditableTable(keyStoreController: _keyStoreController,)
               : IndexedTextArea()),
         ],
       ),

@@ -1,24 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:req/components/tables/editable_table_row.dart';
 
-class EditableTable extends StatefulWidget {
-  EditableTable({super.key, required this.rows});
+import '../../controller/key_store_controller.dart';
 
-  List<EditableTableRow> rows;
+class EditableTable extends StatefulWidget {
+  EditableTable({super.key, required this.keyStoreController});
+
+  final KeyStoreController keyStoreController;
 
   @override
   State<EditableTable> createState() => _EditableTableState();
 }
 
 class _EditableTableState extends State<EditableTable> {
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         SingleChildScrollView(
           child: Column(
-            children: widget.rows,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: ListenableBuilder(
+                  builder: (BuildContext context, Widget? child) {
+                    final List<EditableTableRow> rows =
+                        widget.keyStoreController.rows;
+                    return ListView.builder(itemBuilder: (context, index) {
+                      return rows[index];
+                    });
+                  }, listenable: widget.keyStoreController,
+                ),
+              ),
+            ],
           ),
         ),
       ],
