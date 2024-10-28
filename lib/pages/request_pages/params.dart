@@ -68,17 +68,26 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
             ],
           ),
           (!isBulkEdit
-              ? KeyboardListener(onKeyEvent: (event) {
-                if (event is KeyDownEvent) {
-                  bool isAltPressed = HardwareKeyboard.instance.isAltPressed;
-                  bool isPlusPressed = event.logicalKey == LogicalKeyboardKey.equal || event.logicalKey == LogicalKeyboardKey.equal;
-                  if (isAltPressed && isPlusPressed) {
-                    setState(() {
-                      widget.keyStoreController.addRow();
-                    });
-                  }
-                }
-          }, focusNode: FocusNode(),child: SizedBox(height: 296, child: EditableTable()),)
+              ? KeyboardListener(
+                  onKeyEvent: (event) {
+                    if (event is KeyDownEvent) {
+                      bool isAltPressed =
+                          HardwareKeyboard.instance.isAltPressed;
+                      bool isPlusPressed =
+                          event.logicalKey == LogicalKeyboardKey.equal ||
+                              event.logicalKey == LogicalKeyboardKey.equal;
+                      if (isAltPressed && isPlusPressed) {
+                        setState(() {
+                          widget.keyStoreController.addRow();
+                        });
+                      }
+                    }
+                  },
+                  focusNode: FocusNode(),
+                  child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 296),
+                      child: EditableTable()),
+                )
               : IndexedTextArea()),
         ],
       ),

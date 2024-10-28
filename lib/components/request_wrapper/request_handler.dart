@@ -1,9 +1,13 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:req/components/buttons/default_text_icon_button.dart';
 import 'package:req/components/dropdown_input/dropdown_input.dart';
 import 'package:http/http.dart' as http;
+import 'package:req/components/request_wrapper/response.dart';
 import 'package:req/components/tables/editable_table_row.dart';
+import 'package:req/dto/response_dto.dart';
 import 'package:req/pages/request_pages/auth.dart';
 import 'package:req/pages/request_pages/body.dart';
 import 'package:req/pages/request_pages/headers.dart';
@@ -13,13 +17,11 @@ import 'package:req/pages/request_pages/tests.dart';
 
 import '../../controller/key_store_controller.dart';
 
-class RequestHandler extends StatelessWidget {
+class RequestHandler extends StatefulWidget {
   RequestHandler({super.key}) {
     tabs = tabContent.map((e) => Tab(text: e)).toList();
     value = requestOptions[0];
   }
-
-  TextEditingController requestUrlController = TextEditingController();
 
   static const requestOptions = [
     "GET",
@@ -42,6 +44,17 @@ class RequestHandler extends StatelessWidget {
   String value = "";
 
   @override
+  State<RequestHandler> createState() => _RequestHandlerState();
+}
+
+class _RequestHandlerState extends State<RequestHandler> {
+  TextEditingController requestUrlController = TextEditingController();
+
+  ResponseDto? res;
+
+  bool showResponse = false;
+
+  @override
   Widget build(BuildContext context) {
 
 
@@ -58,7 +71,7 @@ class RequestHandler extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: 800,
-                  child: DropdownInput(options: requestOptions, controller: requestUrlController, onChanged: (value) => this.value = value),
+                  child: DropdownInput(options: RequestHandler.requestOptions, controller: requestUrlController, onChanged: (value) => widget.value = value),
                 ),
               ),
               Padding(
@@ -67,12 +80,17 @@ class RequestHandler extends StatelessWidget {
                   height: 50,
                   child: DefaultTextIconButton(
                     onPressed: () {
-                      if (value == "GET") {
+                      if (widget.value == "GET") {
                         Stopwatch stopwatch = Stopwatch()..start();
+                        setState(() {
+                          res = null;
+                          showResponse = true;
+                        });
 
-                        http.get(Uri.parse(assembleUrl(keyStoreController.rows))).then((value) {
-                          print(value.headers);
-                          print("GET executed in ${stopwatch.elapsed.inMilliseconds}ms");
+                        sendRequest(assembleUrl(keyStoreController.rows)).then((value) {
+                          setState(() {
+                            res = ResponseDto(response: value, executionTime: stopwatch.elapsedMilliseconds);
+                          });
                         });
                       }
                     },
@@ -87,7 +105,7 @@ class RequestHandler extends StatelessWidget {
             ],
           ),
           DefaultTabController(
-            length: tabs.length,
+            length: widget.tabs.length,
             child: Flexible(
               fit: FlexFit.loose,
               child: Column(
@@ -95,7 +113,7 @@ class RequestHandler extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: 1000,
-                    child: TabBar(tabs: tabs),
+                    child: TabBar(tabs: widget.tabs),
                   ),
                   Flexible(
                     fit: FlexFit.loose,
@@ -110,7 +128,7 @@ class RequestHandler extends StatelessWidget {
                       ],
                     ),
                   ),
-                  CircularProgressIndicator(),
+                  Response(res: res, show: showResponse,),
                 ],
               ),
             ),
@@ -125,6 +143,9 @@ class RequestHandler extends StatelessWidget {
 
     for (var row in rows) {
       if (row.isEnabled) {
+        if (row.keyController.text.isEmpty || row.valueController.text.isEmpty) {
+          continue;
+        }
         String key = ":${row.keyController.text}";
         String value = row.valueController.text;
 
@@ -133,5 +154,12 @@ class RequestHandler extends StatelessWidget {
     }
 
     return baseUrl;
+  }
+
+  Future<http.Response> sendRequest(String url) {
+    final data = Isolate.run(() {
+      return http.get(Uri.parse(url));
+    });
+    return data;
   }
 }
