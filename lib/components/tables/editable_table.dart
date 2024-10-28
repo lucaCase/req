@@ -1,41 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:req/components/tables/editable_table_row.dart';
+import 'package:provider/provider.dart';
 
 import '../../controller/key_store_controller.dart';
+import 'editable_table_row.dart';
 
-class EditableTable extends StatefulWidget {
-  EditableTable({super.key, required this.keyStoreController});
-
-  final KeyStoreController keyStoreController;
-
-  @override
-  State<EditableTable> createState() => _EditableTableState();
-}
-
-class _EditableTableState extends State<EditableTable> {
+class EditableTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: ListenableBuilder(
-                  builder: (BuildContext context, Widget? child) {
-                    final List<EditableTableRow> rows =
-                        widget.keyStoreController.rows;
-                    return ListView.builder(itemBuilder: (context, index) {
-                      return rows[index];
-                    });
-                  }, listenable: widget.keyStoreController,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+    var keyStoreController = Provider.of<KeyStoreController>(context);
+
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: keyStoreController.rows.length,
+      itemBuilder: (context, index) {
+        return EditableTableRow(
+          key: keyStoreController.rows[index].key,
+          keyController: keyStoreController.rows[index].keyController,
+          valueController: keyStoreController.rows[index].valueController,
+          onDelete: () => keyStoreController.removeRow(index),
+        );
+      },
+
     );
   }
 }

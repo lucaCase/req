@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:req/components/tables/editable_table.dart';
-import 'package:req/components/text_area/indexed_text_area.dart';
-
+import 'package:flutter/services.dart';
+import '../../components/tables/editable_table.dart';
+import '../../components/text_area/indexed_text_area.dart';
 import '../../controller/key_store_controller.dart';
 
 class Params extends StatefulWidget {
-  Params({super.key});
+  Params({super.key, required this.keyStoreController});
+
+  KeyStoreController keyStoreController;
 
   @override
   State<Params> createState() => _ParamsState();
@@ -16,9 +18,6 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 
   bool isBulkEdit = false;
-
-
-  final KeyStoreController _keyStoreController = KeyStoreController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +41,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                 children: [
                   IconButton(
                     onPressed: () {
-                      setState(() {
-                        _keyStoreController.resetRows();
-                      });
+                      widget.keyStoreController.resetRows();
                     },
                     icon: const Icon(Icons.delete_outline),
                     tooltip: "Reset",
@@ -61,9 +58,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                   ),
                   IconButton(
                     onPressed: () {
-                      setState(() {
-                        _keyStoreController.addRow();
-                      });
+                      widget.keyStoreController.addRow();
                     },
                     icon: const Icon(Icons.add),
                     tooltip: "Add parameter",
@@ -73,7 +68,17 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
             ],
           ),
           (!isBulkEdit
-              ? EditableTable(keyStoreController: _keyStoreController,)
+              ? KeyboardListener(onKeyEvent: (event) {
+                if (event is KeyDownEvent) {
+                  bool isAltPressed = HardwareKeyboard.instance.isAltPressed;
+                  bool isPlusPressed = event.logicalKey == LogicalKeyboardKey.equal || event.logicalKey == LogicalKeyboardKey.equal;
+                  if (isAltPressed && isPlusPressed) {
+                    setState(() {
+                      widget.keyStoreController.addRow();
+                    });
+                  }
+                }
+          }, focusNode: FocusNode(),child: SizedBox(height: 296, child: EditableTable()),)
               : IndexedTextArea()),
         ],
       ),
