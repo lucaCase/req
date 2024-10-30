@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DropdownInput extends StatefulWidget {
-
-  DropdownInput({super.key, required this.options, required this.controller, required this.onChanged}) {
-
+  DropdownInput({
+    super.key,
+    required this.options,
+    required this.controller,
+    required this.onChanged,
+    required this.onEnter,
+  }) {
     if (options.isEmpty) {
       throw ArgumentError("options cannot be empty");
     }
-    value = options.first;
 
     for (var i = 0; i < options.length; i++) {
       entries.add(DropdownMenuItem(
@@ -21,10 +25,13 @@ class DropdownInput extends StatefulWidget {
   }
 
   TextEditingController controller;
+  FocusNode focusNode = FocusNode();
+  final List<String> options;
+  final List<DropdownMenuItem<String>> entries = [];
+  final ValueChanged<String> onChanged;
+  final VoidCallback onEnter;
 
-  static RegExp urlRegex = RegExp("(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,}|https?:\/\/localhost(:\d{1,5})?)");
-
-  final List<Color> colors = [
+  static const List<Color> colors = [
     Colors.green,
     Colors.red,
     Colors.blue,
@@ -37,19 +44,24 @@ class DropdownInput extends StatefulWidget {
     Colors.cyan,
   ];
 
-  List<DropdownMenuItem<String>> entries = [];
-
-  ValueChanged<String> onChanged = (val) => val;
-
-  List<String> options;
-  String value = "";
-
   @override
   State<DropdownInput> createState() => _DropdownInputState();
 }
 
 class _DropdownInputState extends State<DropdownInput> {
+  late String value;
 
+  @override
+  void initState() {
+    super.initState();
+    value = widget.options.first;
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +78,12 @@ class _DropdownInputState extends State<DropdownInput> {
               focusColor: Colors.transparent,
               underline: const SizedBox(),
               items: widget.entries,
-              value: widget.value,
-              onChanged: (String? value) {
+              value: value,
+              // Use the state variable
+              onChanged: (String? newValue) {
                 setState(() {
-                  widget.value = value!;
-                  widget.onChanged(widget.value);
+                  value = newValue!; // Update the state variable
+                  widget.onChanged(newValue);
                 });
               },
             ),
@@ -82,12 +95,21 @@ class _DropdownInputState extends State<DropdownInput> {
               ),
             ),
             Expanded(
-              child: TextFormField(
-                controller: widget.controller,
-                decoration: const InputDecoration(
-                  
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: KeyboardListener(
+                focusNode: widget.focusNode,
+                onKeyEvent: (event) {
+                  if (event is KeyDownEvent) {
+                    if (event.logicalKey == LogicalKeyboardKey.enter) {
+                      widget.onEnter();
+                    }
+                  }
+                },
+                child: TextFormField(
+                  controller: widget.controller,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  ),
                 ),
               ),
             ),

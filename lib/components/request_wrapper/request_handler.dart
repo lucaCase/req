@@ -1,10 +1,8 @@
-import 'dart:isolate';
-
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:req/components/buttons/default_text_icon_button.dart';
 import 'package:req/components/dropdown_input/dropdown_input.dart';
-import 'package:http/http.dart' as http;
 import 'package:req/components/request_wrapper/response.dart';
 import 'package:req/components/tables/editable_table_row.dart';
 import 'package:req/dto/response_dto.dart';
@@ -20,7 +18,6 @@ import '../../controller/key_store_controller.dart';
 class RequestHandler extends StatefulWidget {
   RequestHandler({super.key}) {
     tabs = tabContent.map((e) => Tab(text: e)).toList();
-    value = requestOptions[0];
   }
 
   static const requestOptions = [
@@ -41,8 +38,6 @@ class RequestHandler extends StatefulWidget {
   ];
   List<Tab> tabs = [];
 
-  String value = "";
-
   @override
   State<RequestHandler> createState() => _RequestHandlerState();
 }
@@ -50,19 +45,19 @@ class RequestHandler extends StatefulWidget {
 class _RequestHandlerState extends State<RequestHandler> {
   TextEditingController requestUrlController = TextEditingController();
 
+  String value = "GET";
+
   ResponseDto? res;
 
   bool showResponse = false;
 
   @override
   Widget build(BuildContext context) {
-
-
     var keyStoreController = Provider.of<KeyStoreController>(context);
 
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +66,14 @@ class _RequestHandlerState extends State<RequestHandler> {
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   width: 800,
-                  child: DropdownInput(options: RequestHandler.requestOptions, controller: requestUrlController, onChanged: (value) => widget.value = value),
+                  child: DropdownInput(
+                    onEnter: () {
+                      sendRequestToServer(keyStoreController);
+                    },
+                    options: RequestHandler.requestOptions,
+                    controller: requestUrlController,
+                    onChanged: (value) => this.value = value,
+                  ),
                 ),
               ),
               Padding(
@@ -80,19 +82,7 @@ class _RequestHandlerState extends State<RequestHandler> {
                   height: 50,
                   child: DefaultTextIconButton(
                     onPressed: () {
-                      if (widget.value == "GET") {
-                        Stopwatch stopwatch = Stopwatch()..start();
-                        setState(() {
-                          res = null;
-                          showResponse = true;
-                        });
-
-                        sendRequest(assembleUrl(keyStoreController.rows)).then((value) {
-                          setState(() {
-                            res = ResponseDto(response: value, executionTime: stopwatch.elapsedMilliseconds);
-                          });
-                        });
-                      }
+                      sendRequestToServer(keyStoreController);
                     },
                     icon: const Icon(Icons.send, color: Colors.white),
                     label: const Text(
@@ -107,7 +97,7 @@ class _RequestHandlerState extends State<RequestHandler> {
           DefaultTabController(
             length: widget.tabs.length,
             child: Flexible(
-              fit: FlexFit.loose,
+              fit: FlexFit.tight,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -119,7 +109,9 @@ class _RequestHandlerState extends State<RequestHandler> {
                     fit: FlexFit.loose,
                     child: TabBarView(
                       children: [
-                        Params(keyStoreController: keyStoreController,),
+                        Params(
+                          keyStoreController: keyStoreController,
+                        ),
                         Body(),
                         Headers(),
                         Auth(),
@@ -128,7 +120,10 @@ class _RequestHandlerState extends State<RequestHandler> {
                       ],
                     ),
                   ),
-                  Response(res: res, show: showResponse,),
+                  Response(
+                    res: res,
+                    show: showResponse,
+                  ),
                 ],
               ),
             ),
@@ -138,12 +133,28 @@ class _RequestHandlerState extends State<RequestHandler> {
     );
   }
 
+  void sendRequestToServer(KeyStoreController keyStoreController) {
+    Stopwatch stopwatch = Stopwatch()..start();
+    setState(() {
+      res = null;
+      showResponse = true;
+    });
+
+    sendRequest(assembleUrl(keyStoreController.rows), value).then((value) {
+      setState(() {
+        res = ResponseDto(
+            response: value, executionTime: stopwatch.elapsedMilliseconds);
+      });
+    });
+  }
+
   String assembleUrl(List<EditableTableRow> rows) {
     String baseUrl = requestUrlController.text;
 
     for (var row in rows) {
       if (row.isEnabled) {
-        if (row.keyController.text.isEmpty || row.valueController.text.isEmpty) {
+        if (row.keyController.text.isEmpty ||
+            row.valueController.text.isEmpty) {
           continue;
         }
         String key = ":${row.keyController.text}";
@@ -156,10 +167,41 @@ class _RequestHandlerState extends State<RequestHandler> {
     return baseUrl;
   }
 
-  Future<http.Response> sendRequest(String url) {
-    final data = Isolate.run(() {
-      return http.get(Uri.parse(url));
-    });
-    return data;
+  Future<http.Response> sendRequest(String url, String method) async {
+    var function = getFunction(method);
+    try {
+      return await function(Uri.parse(url));
+    } catch (e) {
+      return http.Response("Error: $e", 500);
+    }
+  }
+
+  Function getFunction(String method) {
+    switch (method) {
+      case "GET":
+        return (Uri url) => http.get(url);
+      case "POST":
+        return (Uri url, {Map<String, String>? headers, dynamic body}) =>
+            http.post(url, headers: headers, body: body);
+      case "PUT":
+        return (Uri url, {Map<String, String>? headers, dynamic body}) =>
+            http.put(url, headers: headers, body: body);
+      case "DELETE":
+        return (Uri url, {Map<String, String>? headers}) =>
+            http.delete(url, headers: headers);
+      case "PATCH":
+        return (Uri url, {Map<String, String>? headers, dynamic body}) =>
+            http.patch(url, headers: headers, body: body);
+      case "OPTIONS":
+        return (Uri url, {Map<String, String>? headers}) async {
+          var request = http.Request("OPTIONS", url);
+          if (headers != null) request.headers.addAll(headers);
+
+          var streamedResponse = await request.send();
+          return http.Response.fromStream(streamedResponse);
+        };
+      default:
+        return (Uri url) => http.get(url);
+    }
   }
 }
