@@ -7,7 +7,6 @@ import 'package:req/components/request_wrapper/response.dart';
 import 'package:req/components/tables/editable_table_row.dart';
 import 'package:req/dto/response_dto.dart';
 import 'package:req/pages/request_pages/auth.dart';
-import 'package:req/pages/request_pages/body.dart';
 import 'package:req/pages/request_pages/headers.dart';
 import 'package:req/pages/request_pages/params.dart';
 import 'package:req/pages/request_pages/scripts.dart';
@@ -34,7 +33,7 @@ class RequestHandler extends StatefulWidget {
     "Headers",
     "Auth",
     "Scripts",
-    "Tests"
+    //"Tests"
   ];
   List<Tab> tabs = [];
 
@@ -112,7 +111,7 @@ class _RequestHandlerState extends State<RequestHandler> {
                         Params(
                           keyStoreController: keyStoreController,
                         ),
-                        Body(),
+                        //Body(),
                         Headers(),
                         Auth(),
                         Scripts(),

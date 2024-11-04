@@ -1,0 +1,68 @@
+{
+    "name": "RandomData",
+    "id": "b67c505e-4928-4fd3-bdab-cfb7c3e8bd61",
+    "items": [
+        {
+            "quantity": 50,
+            "item_id": "ff985adb-2a16-4914-84f9-a9e6fec4b350",
+            "price": 23.22021231469301,
+            "tags": [
+                "tag0",
+                "tag1",
+                "tag2"
+            ]
+        },
+        {
+            "quantity": 45,
+            "item_id": "4c163d05-6258-42bc-9526-05432d688599",
+            "price": 57.974734731803345,
+            "tags": [
+                "tag0",
+                "tag1",
+                "tag2"
+            ]
+        },
+        {
+            "quantity": 79,
+            "item_id": "d4636633-6491-4e25-97b4-8c9a5b6717dd",
+            "price": 6.438189059551192,
+            "tags": [
+                "tag0",
+                "tag1",
+                "tag2"
+            ]
+        },
+        {
+            "quantity": 86,
+            "item_id": "5365fbea-f6d6-430e-85d7-fe8e115c7251",
+            "price": 80.03094461928514,
+            "tags": [
+                "tag0",
+                "tag1",
+                "tag2"
+            ]
+        },
+        {
+            "quantity": 9,
+            "item_id": "064ae1cc-d843-48f3-92b1-00ca6b9962e1",
+            "price": 46.63373316055457,
+            "tags": [
+                "tag0",
+                "tag1",
+                "tag2"
+            ]
+        }
+    ],
+    "random_numbers": [
+        342,
+        434,
+        185,
+        106,
+        398,
+        142,
+        452,
+        383,
+        113,
+        463
+    ]
+}

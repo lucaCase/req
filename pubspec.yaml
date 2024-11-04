@@ -44,6 +44,11 @@ dependencies:
   highlight: ^0.7.0
   re_editor: ^0.5.0
   flutter_js: ^0.8.1
+  re_highlight: ^0.0.3
+  path_provider: ^2.1.5
+  xml: ^6.5.0
+  flutter_glow: ^0.3.2
+  hover_widget: ^0.1.1
 
 dev_dependencies:
   flutter_test:

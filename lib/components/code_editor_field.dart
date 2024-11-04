@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_highlight/themes/atom-one-dark-reasonable.dart';
+import 'package:re_editor/re_editor.dart';
+import 'package:re_highlight/re_highlight.dart';
+
+class CodeEditorField extends StatefulWidget {
+  CodeEditorField(
+      {super.key,
+      this.readOnly = false,
+      required this.codeController,
+      this.languageString,
+      this.languageMode});
+
+  CodeLineEditingController codeController;
+  bool readOnly;
+  String? languageString;
+  Mode? languageMode;
+
+  @override
+  State<CodeEditorField> createState() => _CodeEditorFieldState();
+}
+
+class _CodeEditorFieldState extends State<CodeEditorField> {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 300,
+      child: CodeEditor(
+        readOnly: widget.readOnly,
+        scrollController: CodeScrollController(
+          verticalScroller: ScrollController(),
+          horizontalScroller: ScrollController(),
+        ),
+        controller: widget.codeController,
+        indicatorBuilder:
+            (context, editingController, chunkController, notifier) {
+          return Row(
+            children: [
+              DefaultCodeLineNumber(
+                  notifier: notifier, controller: editingController),
+              DefaultCodeChunkIndicator(
+                  width: 20, controller: chunkController, notifier: notifier)
+            ],
+          );
+        },
+        style: CodeEditorStyle(
+          codeTheme: widget.languageString == null
+              ? null
+              : CodeHighlightTheme(
+                  languages: {
+                    widget.languageString!:
+                        CodeHighlightThemeMode(mode: widget.languageMode!),
+                  },
+                  theme: atomOneDarkReasonableTheme,
+                ),
+        ),
+      ),
+    );
+  }
+}
