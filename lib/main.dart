@@ -38,9 +38,9 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        initialRoute: testRoute,
+        initialRoute: homeRoute,
         routes: {
-          homeRoute: (context) => const Home(),
+          homeRoute: (context) => Home(),
           testRoute: (context) => const Test(),
           tabTestRoute: (context) => const TabsTest(),
         },

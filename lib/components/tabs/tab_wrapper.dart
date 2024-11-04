@@ -56,13 +56,7 @@ class _TabWrapperState extends State<TabWrapper> {
           ),
         ),
         Expanded(
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            transitionBuilder: (Widget child, Animation<double> animation) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            child: widget.tabBodies[index],
-          ),
+          child: widget.tabBodies[index],
         ),
       ],
     );

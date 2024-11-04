@@ -20,9 +20,11 @@ class CodeEditorField extends StatefulWidget {
   State<CodeEditorField> createState() => _CodeEditorFieldState();
 }
 
-class _CodeEditorFieldState extends State<CodeEditorField> {
+class _CodeEditorFieldState extends State<CodeEditorField>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SizedBox(
       height: 300,
       child: CodeEditor(
@@ -57,4 +59,7 @@ class _CodeEditorFieldState extends State<CodeEditorField> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

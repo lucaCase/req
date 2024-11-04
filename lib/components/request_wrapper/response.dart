@@ -35,7 +35,12 @@ class _ResponseState extends State<Response> {
       var body = widget.res!.response.body;
       var (controllerText, _, _) =
           LanguageService.getLanguage(contentType, body);
-      codeController.text = controllerText;
+
+      if (codeController.text != controllerText) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          codeController.text = controllerText;
+        });
+      }
     }
   }
 
@@ -52,7 +57,7 @@ class _ResponseState extends State<Response> {
     }
 
     if (widget.res == null) {
-      return const CircularProgressIndicator();
+      return const Center(child: CircularProgressIndicator());
     } else {
       var contentType = widget.res!.response.headers["content-type"]!;
       var body = widget.res!.response.body;
@@ -79,14 +84,12 @@ class _ResponseState extends State<Response> {
             Expanded(
               child: TabWrapper(tabContents: tabs, tabBodies: [
                 CodeEditorField(
-                  key: ValueKey('MainEditor'),
                   readOnly: true,
                   codeController: codeController,
                   languageString: languageString,
                   languageMode: languageMode,
                 ),
                 CodeEditorField(
-                  key: ValueKey('RawEditor'),
                   codeController: codeController,
                   readOnly: true,
                   languageString: null,
