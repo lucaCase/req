@@ -27,11 +27,13 @@ class _IndexedTextAreaState extends State<IndexedTextArea> {
       }
     }
 
-    return CodeEditorField(
-      readOnly: false,
-      languageString: "bulk",
-      languageMode: langBulk,
-      codeController: widget.controller,
+    return Expanded(
+      child: CodeEditorField(
+        readOnly: false,
+        languageString: "bulk",
+        languageMode: langBulk,
+        codeController: widget.controller,
+      ),
     );
   }
 }

@@ -20,6 +20,10 @@ class _SideNavigationRailState extends State<SideNavigationRail> {
       minWidth: 100,
       destinations: [
         NavigationRailDestination(
+            icon: Icon(Icons.collections_bookmark_outlined,
+                color: Theme.of(context).primaryColor),
+            label: const Text("Collections")),
+        NavigationRailDestination(
             icon: Icon(
               Icons.http,
               color: Theme.of(context).primaryColor,

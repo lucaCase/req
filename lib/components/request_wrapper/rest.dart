@@ -15,8 +15,8 @@ import 'package:req/utils/methods/method_provider.dart';
 
 import '../../controller/key_store_controller.dart';
 
-class RequestHandler extends StatefulWidget {
-  RequestHandler({super.key}) {
+class Rest extends StatefulWidget {
+  Rest({super.key}) {
     tabs = tabContent.map((e) => Tab(text: e)).toList();
   }
 
@@ -39,10 +39,10 @@ class RequestHandler extends StatefulWidget {
   List<Tab> tabs = [];
 
   @override
-  State<RequestHandler> createState() => _RequestHandlerState();
+  State<Rest> createState() => _RestState();
 }
 
-class _RequestHandlerState extends State<RequestHandler> {
+class _RestState extends State<Rest> {
   TextEditingController requestUrlController = TextEditingController();
 
   String value = "GET";
@@ -70,7 +70,7 @@ class _RequestHandlerState extends State<RequestHandler> {
                     onEnter: () {
                       sendRequestToServer(keyStoreController);
                     },
-                    options: RequestHandler.requestOptions,
+                    options: Rest.requestOptions,
                     controller: requestUrlController,
                     onChanged: (value) => this.value = value,
                   ),

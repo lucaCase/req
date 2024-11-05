@@ -18,9 +18,9 @@ class EditableTable extends StatelessWidget {
           keyController: keyStoreController.rows[index].keyController,
           valueController: keyStoreController.rows[index].valueController,
           onDelete: () => keyStoreController.removeRow(index),
+          isEnabled: keyStoreController.rows[index].isEnabled,
         );
       },
-
     );
   }
 }

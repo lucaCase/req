@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:req/components/buttons/default_text_icon_button.dart';
-import 'package:req/components/request_wrapper/request_handler.dart';
+import 'package:req/components/request_wrapper/rest.dart';
 import 'package:req/components/side-navigation/side_navigation_rail.dart';
 
 class Home extends StatefulWidget {
@@ -13,7 +13,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int selectedIndex = 0;
   List<Widget> pages = [
-    RequestHandler(),
+    const Placeholder(),
+    Rest(),
     const Placeholder(),
     const Placeholder(),
     const Placeholder(),

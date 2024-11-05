@@ -60,7 +60,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                             var parts = line.split(":");
                             if (parts.length == 2) {
                               widget.keyStoreController.addRowWithValues(
-                                key: parts[0].trim(),
+                                key: parts[0].trim().replaceAll("#", ""),
                                 value: parts[1].trim(),
                                 isEnabled: parts[0].trim()[0] == "#",
                               );

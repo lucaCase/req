@@ -47,70 +47,74 @@ class ResponseHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text("Status: ", style: defaultTextStyle()),
-        Text("$statusCode", style: getStyle(code: statusCode ~/ 100)),
-        const SizedBox(width: 25),
-        Text("Time: ", style: defaultTextStyle()),
-        Text("${executionTime}ms",
-            style: defaultTextStyle(color: Colors.green)),
-        const SizedBox(width: 25),
-        Text("Size: ", style: defaultTextStyle()),
-        Text("${double.parse((contentLength / 1000).toStringAsFixed(2))} KB",
-            style: defaultTextStyle(color: Colors.green)),
-        const SizedBox(width: 25),
-        Text("Content-Type: ", style: defaultTextStyle()),
-        Text(contentType, style: defaultTextStyle(color: Colors.green)),
-        const SizedBox(width: 25),
-        IconButton(
-            tooltip: "Download response body",
-            onPressed: () async {
-              final downloadsDir = PathProviderService.getDownloadPath();
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+      child: Row(
+        children: [
+          Text("Status: ", style: defaultTextStyle()),
+          Text("$statusCode", style: getStyle(code: statusCode ~/ 100)),
+          const SizedBox(width: 25),
+          Text("Time: ", style: defaultTextStyle()),
+          Text("${executionTime}ms",
+              style: defaultTextStyle(color: Colors.green)),
+          const SizedBox(width: 25),
+          Text("Size: ", style: defaultTextStyle()),
+          Text("${double.parse((contentLength / 1000).toStringAsFixed(2))} KB",
+              style: defaultTextStyle(color: Colors.green)),
+          const SizedBox(width: 25),
+          Text("Content-Type: ", style: defaultTextStyle()),
+          Text(contentType, style: defaultTextStyle(color: Colors.green)),
+          const SizedBox(width: 25),
+          IconButton(
+              tooltip: "Download response body",
+              onPressed: () async {
+                final downloadsDir = PathProviderService.getDownloadPath();
 
-              String fileName =
-                  "response_${DateTime.now().millisecondsSinceEpoch}.$languageString";
+                String fileName =
+                    "response_${DateTime.now().millisecondsSinceEpoch}.$languageString";
 
-              File file = File("$downloadsDir/$fileName");
+                File file = File("$downloadsDir/$fileName");
 
-              await file.writeAsString(controllerText);
+                await file.writeAsString(controllerText);
 
-              toastification.show(
-                type: ToastificationType.info,
-                style: ToastificationStyle.flatColored,
-                alignment: Alignment.bottomRight,
-                title: const Text(
-                  "Downloaded response",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                description: RichText(
-                  text: TextSpan(
-                      text: "Downloaded response under $downloadsDir/$fileName",
-                      style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400)),
-                ),
-                autoCloseDuration: const Duration(seconds: 4),
-                showProgressBar: true,
-                pauseOnHover: true,
-                applyBlurEffect: true,
-                animationDuration: const Duration(milliseconds: 300),
-                closeButtonShowType: CloseButtonShowType.none,
-                dragToClose: true,
-                callbacks: ToastificationCallbacks(
-                  onTap: (toastItem) async {
-                    String command = CommandProviderService.getStartCommand();
-                    Process.run(command, ["$downloadsDir\\$fileName"]);
-                  },
-                ),
-              );
-            },
-            icon: Icon(
-              Icons.download,
-              color: Theme.of(context).primaryColor,
-            )),
-      ],
+                toastification.show(
+                  type: ToastificationType.info,
+                  style: ToastificationStyle.flatColored,
+                  alignment: Alignment.bottomRight,
+                  title: const Text(
+                    "Downloaded response",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                  description: RichText(
+                    text: TextSpan(
+                        text:
+                            "Downloaded response under $downloadsDir/$fileName",
+                        style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400)),
+                  ),
+                  autoCloseDuration: const Duration(seconds: 4),
+                  showProgressBar: true,
+                  pauseOnHover: true,
+                  applyBlurEffect: true,
+                  animationDuration: const Duration(milliseconds: 300),
+                  closeButtonShowType: CloseButtonShowType.none,
+                  dragToClose: true,
+                  callbacks: ToastificationCallbacks(
+                    onTap: (toastItem) async {
+                      String command = CommandProviderService.getStartCommand();
+                      Process.run(command, ["$downloadsDir\\$fileName"]);
+                    },
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.download,
+                color: Theme.of(context).primaryColor,
+              )),
+        ],
+      ),
     );
   }
 }
