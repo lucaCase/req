@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:re_editor/re_editor.dart';
+
 import '../../components/tables/editable_table.dart';
 import '../../components/text_area/indexed_text_area.dart';
 import '../../controller/key_store_controller.dart';
@@ -16,8 +18,8 @@ class Params extends StatefulWidget {
 class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
   bool isBulkEdit = false;
+  CodeLineEditingController bulkEditController = CodeLineEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                   IconButton(
                     onPressed: () {
                       widget.keyStoreController.resetRows();
+                      bulkEditController.text = "";
                     },
                     icon: const Icon(Icons.delete_outline),
                     tooltip: "Reset",
@@ -50,6 +53,23 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                     onPressed: () {
                       setState(() {
                         isBulkEdit = !isBulkEdit;
+                        if (!isBulkEdit) {
+                          widget.keyStoreController.resetRows();
+                          for (var line
+                              in bulkEditController.text.split("\n")) {
+                            var parts = line.split(":");
+                            if (parts.length == 2) {
+                              widget.keyStoreController.addRowWithValues(
+                                key: parts[0].trim(),
+                                value: parts[1].trim(),
+                                isEnabled: parts[0].trim()[0] == "#",
+                              );
+                            }
+                          }
+                          if (widget.keyStoreController.rows.length > 1) {
+                            widget.keyStoreController.rows.removeAt(0);
+                          }
+                        }
                       });
                     },
                     icon: Icon(Icons.edit_note,
@@ -88,7 +108,10 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                       constraints: const BoxConstraints(maxHeight: 296),
                       child: EditableTable()),
                 )
-              : IndexedTextArea()),
+              : IndexedTextArea(
+                  elements: widget.keyStoreController.rows,
+                  controller: bulkEditController,
+                )),
         ],
       ),
     );

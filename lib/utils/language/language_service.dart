@@ -4,7 +4,7 @@ import 'package:re_highlight/languages/json.dart';
 import 'package:re_highlight/languages/xml.dart';
 import 'package:re_highlight/languages/yaml.dart';
 import 'package:re_highlight/re_highlight.dart';
-import 'package:req/utils/language/html.dart';
+import 'package:req/utils/language/highlighting/html.dart';
 import 'package:xml/xml.dart';
 
 class LanguageService {

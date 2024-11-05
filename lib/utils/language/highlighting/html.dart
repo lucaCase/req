@@ -1,4 +1,3 @@
-// html.dart
 import 'package:re_highlight/re_highlight.dart';
 
 final langHtml = Mode(

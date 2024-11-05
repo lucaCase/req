@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class EditableTableRow extends StatefulWidget {
-  EditableTableRow({super.key, required this.onDelete, required this.keyController, required this.valueController});
+  EditableTableRow(
+      {super.key,
+      required this.onDelete,
+      required this.keyController,
+      required this.valueController,
+      this.isEnabled = true});
 
   TextEditingController keyController = TextEditingController();
 
@@ -16,15 +21,13 @@ class EditableTableRow extends StatefulWidget {
 
   final VoidCallback onDelete;
 
-
-  bool isEnabled = true;
+  bool isEnabled;
 
   @override
   State<EditableTableRow> createState() => _EditableTableRowState();
 }
 
 class _EditableTableRowState extends State<EditableTableRow> {
-
   InputDecoration inputDecoration(String hintText) {
     return InputDecoration(
       isDense: true,
@@ -43,7 +46,9 @@ class _EditableTableRowState extends State<EditableTableRow> {
       onKeyEvent: (event) {
         if (event is KeyDownEvent) {
           bool altIsPressed = HardwareKeyboard.instance.isAltPressed;
-          bool isMinusOrDelPressed = event.logicalKey == LogicalKeyboardKey.delete || event.logicalKey == LogicalKeyboardKey.minus;
+          bool isMinusOrDelPressed =
+              event.logicalKey == LogicalKeyboardKey.delete ||
+                  event.logicalKey == LogicalKeyboardKey.minus;
           if (altIsPressed && isMinusOrDelPressed) {
             setState(() {
               widget.onDelete();

@@ -11,6 +11,7 @@ import 'package:req/pages/request_pages/headers.dart';
 import 'package:req/pages/request_pages/params.dart';
 import 'package:req/pages/request_pages/scripts.dart';
 import 'package:req/pages/request_pages/tests.dart';
+import 'package:req/utils/methods/method_provider.dart';
 
 import '../../controller/key_store_controller.dart';
 
@@ -167,40 +168,11 @@ class _RequestHandlerState extends State<RequestHandler> {
   }
 
   Future<http.Response> sendRequest(String url, String method) async {
-    var function = getFunction(method);
+    var function = MethodProvider.getFunction(method);
     try {
       return await function(Uri.parse(url));
     } catch (e) {
       return http.Response("Error: $e", 500);
-    }
-  }
-
-  Function getFunction(String method) {
-    switch (method) {
-      case "GET":
-        return (Uri url) => http.get(url);
-      case "POST":
-        return (Uri url, {Map<String, String>? headers, dynamic body}) =>
-            http.post(url, headers: headers, body: body);
-      case "PUT":
-        return (Uri url, {Map<String, String>? headers, dynamic body}) =>
-            http.put(url, headers: headers, body: body);
-      case "DELETE":
-        return (Uri url, {Map<String, String>? headers}) =>
-            http.delete(url, headers: headers);
-      case "PATCH":
-        return (Uri url, {Map<String, String>? headers, dynamic body}) =>
-            http.patch(url, headers: headers, body: body);
-      case "OPTIONS":
-        return (Uri url, {Map<String, String>? headers}) async {
-          var request = http.Request("OPTIONS", url);
-          if (headers != null) request.headers.addAll(headers);
-
-          var streamedResponse = await request.send();
-          return http.Response.fromStream(streamedResponse);
-        };
-      default:
-        return (Uri url) => http.get(url);
     }
   }
 }

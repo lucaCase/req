@@ -20,7 +20,20 @@ class KeyStoreController with ChangeNotifier {
         key: UniqueKey(),
         onDelete: () => removeRow(_rows.length),
         keyController: TextEditingController(),
-        valueController: TextEditingController(),// Placeholder
+        valueController: TextEditingController(), // Placeholder
+      ),
+    );
+    notifyListeners();
+  }
+
+  void addRowWithValues({required key, required value, required isEnabled}) {
+    _rows.add(
+      EditableTableRow(
+        key: UniqueKey(),
+        onDelete: () => removeRow(_rows.length),
+        keyController: TextEditingController(text: key),
+        valueController: TextEditingController(text: value),
+        isEnabled: isEnabled,
       ),
     );
     notifyListeners();
