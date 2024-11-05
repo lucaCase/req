@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:req/components/buttons/default_text_icon_button.dart';
 import 'package:req/components/dropdown_input/dropdown_input.dart';
 import 'package:req/components/request_wrapper/response.dart';
-import 'package:req/components/tables/editable_table_row.dart';
 import 'package:req/dto/response_dto.dart';
 import 'package:req/pages/request_pages/auth.dart';
 import 'package:req/pages/request_pages/headers.dart';
@@ -14,6 +13,7 @@ import 'package:req/pages/request_pages/tests.dart';
 import 'package:req/utils/methods/method_provider.dart';
 
 import '../../controller/key_store_controller.dart';
+import '../../pages/request_pages/body.dart';
 
 class Rest extends StatefulWidget {
   Rest({super.key}) {
@@ -34,7 +34,7 @@ class Rest extends StatefulWidget {
     "Headers",
     "Auth",
     "Scripts",
-    //"Tests"
+    "Tests"
   ];
   List<Tab> tabs = [];
 
@@ -42,7 +42,7 @@ class Rest extends StatefulWidget {
   State<Rest> createState() => _RestState();
 }
 
-class _RestState extends State<Rest> {
+class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
   TextEditingController requestUrlController = TextEditingController();
 
   String value = "GET";
@@ -53,6 +53,7 @@ class _RestState extends State<Rest> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var keyStoreController = Provider.of<KeyStoreController>(context);
 
     return Center(
@@ -112,7 +113,7 @@ class _RestState extends State<Rest> {
                         Params(
                           keyStoreController: keyStoreController,
                         ),
-                        //Body(),
+                        Body(),
                         Headers(),
                         Auth(),
                         Scripts(),
@@ -123,6 +124,11 @@ class _RestState extends State<Rest> {
                   Response(
                     res: res,
                     show: showResponse,
+                    onClose: () {
+                      setState(() {
+                        showResponse = false;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -140,27 +146,30 @@ class _RestState extends State<Rest> {
       showResponse = true;
     });
 
-    sendRequest(assembleUrl(keyStoreController.rows), value).then((value) {
+    sendRequest(assembleUrl(keyStoreController), value).then((response) {
       setState(() {
         res = ResponseDto(
-            response: value, executionTime: stopwatch.elapsedMilliseconds);
+            response: response, executionTime: stopwatch.elapsedMilliseconds);
       });
     });
   }
 
-  String assembleUrl(List<EditableTableRow> rows) {
+  String assembleUrl(KeyStoreController keyStoreController) {
     String baseUrl = requestUrlController.text;
 
-    for (var row in rows) {
+    for (var row in keyStoreController.rows) {
       if (row.isEnabled) {
         if (row.keyController.text.isEmpty ||
             row.valueController.text.isEmpty) {
           continue;
         }
-        String key = ":${row.keyController.text}";
-        String value = row.valueController.text;
-
-        baseUrl = baseUrl.replaceAll(key, value);
+        if (baseUrl == requestUrlController.text) {
+          baseUrl += "?";
+        } else {
+          baseUrl += "&";
+        }
+        baseUrl += "${row.keyController.text}=${row.valueController.text}";
+        print(baseUrl);
       }
     }
 
@@ -175,4 +184,7 @@ class _RestState extends State<Rest> {
       return http.Response("Error: $e", 500);
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

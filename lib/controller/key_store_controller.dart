@@ -9,6 +9,8 @@ class KeyStoreController with ChangeNotifier {
       onDelete: () {},
       keyController: TextEditingController(),
       valueController: TextEditingController(),
+      onEnable: () {},
+      isEnabled: true,
     ),
   ];
 
@@ -20,7 +22,9 @@ class KeyStoreController with ChangeNotifier {
         key: UniqueKey(),
         onDelete: () => removeRow(_rows.length),
         keyController: TextEditingController(),
-        valueController: TextEditingController(), // Placeholder
+        valueController: TextEditingController(),
+        isEnabled: true,
+        onEnable: () => toggleRow(_rows.length),
       ),
     );
     notifyListeners();
@@ -34,6 +38,7 @@ class KeyStoreController with ChangeNotifier {
         keyController: TextEditingController(text: key),
         valueController: TextEditingController(text: value),
         isEnabled: isEnabled,
+        onEnable: () => toggleRow(_rows.length),
       ),
     );
     notifyListeners();
@@ -78,8 +83,14 @@ class KeyStoreController with ChangeNotifier {
         onDelete: () {},
         keyController: TextEditingController(),
         valueController: TextEditingController(),
+        onEnable: () {},
       ),
     ];
+    notifyListeners();
+  }
+
+  void toggleRow(int index) {
+    _rows[index].isEnabled = !_rows[index].isEnabled;
     notifyListeners();
   }
 }

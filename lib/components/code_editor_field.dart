@@ -36,13 +36,23 @@ class _CodeEditorFieldState extends State<CodeEditorField>
         controller: widget.codeController,
         indicatorBuilder:
             (context, editingController, chunkController, notifier) {
-          return Row(
-            children: [
-              DefaultCodeLineNumber(
-                  notifier: notifier, controller: editingController),
-              DefaultCodeChunkIndicator(
-                  width: 20, controller: chunkController, notifier: notifier)
-            ],
+          return Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                right: BorderSide(
+                  color: Colors.black12,
+                  width: 1,
+                ),
+              ),
+            ),
+            child: Row(
+              children: [
+                DefaultCodeLineNumber(
+                    notifier: notifier, controller: editingController),
+                DefaultCodeChunkIndicator(
+                    width: 20, controller: chunkController, notifier: notifier)
+              ],
+            ),
           );
         },
         style: CodeEditorStyle(

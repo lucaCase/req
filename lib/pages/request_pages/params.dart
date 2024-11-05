@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:re_editor/re_editor.dart';
 
 import '../../components/tables/editable_table.dart';
-import '../../components/text_area/indexed_text_area.dart';
+import '../../components/text_area/bulk_text_area.dart';
 import '../../controller/key_store_controller.dart';
 
 class Params extends StatefulWidget {
@@ -35,7 +35,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "Parameters",
+                "Query Parameters",
                 style: TextStyle(
                     color: Colors.black54, fontWeight: FontWeight.w600),
               ),
@@ -62,7 +62,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                               widget.keyStoreController.addRowWithValues(
                                 key: parts[0].trim().replaceAll("#", ""),
                                 value: parts[1].trim(),
-                                isEnabled: parts[0].trim()[0] == "#",
+                                isEnabled: parts[0].trim()[0] != "#",
                               );
                             }
                           }
@@ -108,7 +108,7 @@ class _ParamsState extends State<Params> with AutomaticKeepAliveClientMixin {
                       constraints: const BoxConstraints(maxHeight: 296),
                       child: EditableTable()),
                 )
-              : IndexedTextArea(
+              : BulkTextArea(
                   elements: widget.keyStoreController.rows,
                   controller: bulkEditController,
                 )),

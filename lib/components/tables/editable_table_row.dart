@@ -7,7 +7,8 @@ class EditableTableRow extends StatefulWidget {
       required this.onDelete,
       required this.keyController,
       required this.valueController,
-      this.isEnabled = true});
+      this.isEnabled = true,
+      required this.onEnable});
 
   TextEditingController keyController = TextEditingController();
 
@@ -19,8 +20,8 @@ class EditableTableRow extends StatefulWidget {
   );
   static const textStyle = TextStyle(fontSize: 14);
 
+  final Function onEnable;
   final VoidCallback onDelete;
-
   bool isEnabled;
 
   @override
@@ -101,6 +102,7 @@ class _EditableTableRowState extends State<EditableTableRow> {
                 ),
                 onPressed: () {
                   setState(() {
+                    widget.onEnable();
                     widget.isEnabled = !widget.isEnabled;
                   });
                 },

@@ -7,10 +7,11 @@ import 'package:req/dto/response_dto.dart';
 import 'package:req/utils/language/language_service.dart';
 
 class Response extends StatefulWidget {
-  Response({super.key, this.res, required this.show});
+  Response({super.key, this.res, required this.show, required this.onClose});
 
   ResponseDto? res;
   bool show;
+  final VoidCallback onClose;
 
   @override
   State<Response> createState() => _ResponseState();
@@ -78,8 +79,9 @@ class _ResponseState extends State<Response> {
               executionTime: widget.res!.executionTime,
               contentLength: widget.res!.response.contentLength!,
               contentType: contentType,
-              languageString: languageString!,
+              languageString: languageString ?? "TEXT",
               controllerText: controllerText,
+              onClose: widget.onClose,
             ),
             Expanded(
               child: TabWrapper(tabContents: tabs, tabBodies: [
