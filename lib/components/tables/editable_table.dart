@@ -9,19 +9,22 @@ class EditableTable extends StatelessWidget {
   Widget build(BuildContext context) {
     var keyStoreController = Provider.of<KeyStoreController>(context);
 
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: keyStoreController.rows.length,
-      itemBuilder: (context, index) {
-        return EditableTableRow(
-          key: keyStoreController.rows[index].key,
-          keyController: keyStoreController.rows[index].keyController,
-          valueController: keyStoreController.rows[index].valueController,
-          onDelete: () => keyStoreController.removeRow(index),
-          isEnabled: keyStoreController.rows[index].isEnabled,
-          onEnable: () => keyStoreController.toggleRow(index),
-        );
-      },
-    );
+    return ReorderableListView.builder(
+        buildDefaultDragHandles: false,
+        itemBuilder: (context, index) {
+          return EditableTableRow(
+            index: index,
+            key: keyStoreController.rows[index].key,
+            keyController: keyStoreController.rows[index].keyController,
+            valueController: keyStoreController.rows[index].valueController,
+            onDelete: () => keyStoreController.removeRow(index),
+            isEnabled: keyStoreController.rows[index].isEnabled,
+            onEnable: () => keyStoreController.toggleRow(index),
+          );
+        },
+        itemCount: keyStoreController.rows.length,
+        onReorder: (oldIndex, newIndex) {
+          keyStoreController.reorderRows(oldIndex, newIndex);
+        });
   }
 }

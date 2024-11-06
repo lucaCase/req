@@ -8,7 +8,8 @@ class EditableTableRow extends StatefulWidget {
       required this.keyController,
       required this.valueController,
       this.isEnabled = true,
-      required this.onEnable});
+      required this.onEnable,
+      required this.index});
 
   TextEditingController keyController = TextEditingController();
 
@@ -23,6 +24,7 @@ class EditableTableRow extends StatefulWidget {
   final Function onEnable;
   final VoidCallback onDelete;
   bool isEnabled;
+  int index;
 
   @override
   State<EditableTableRow> createState() => _EditableTableRowState();
@@ -66,10 +68,12 @@ class _EditableTableRowState extends State<EditableTableRow> {
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black12, width: 0),
               ),
-              child: IconButton(
-                icon: const Icon(Icons.drag_indicator),
-                onPressed: () {},
-              ),
+              child: ReorderableDragStartListener(
+                  index: widget.index,
+                  child: IconButton(
+                    icon: const Icon(Icons.drag_indicator),
+                    onPressed: () {},
+                  )),
             ),
           ),
           Expanded(

@@ -21,9 +21,12 @@ class _BulkTextAreaState extends State<BulkTextArea> {
     for (var row in widget.elements) {
       if (row.keyController.text.isNotEmpty &&
           row.valueController.text.isNotEmpty) {
-        print(row.isEnabled);
+        var character = "# ";
+        if (row.keyController.text.startsWith("# ")) {
+          character = "#";
+        }
         widget.controller.text +=
-            '${!row.isEnabled ? "# " : ""}${row.keyController.text} : ${row.valueController.text}\n';
+            '${!row.isEnabled ? character : ""}${row.keyController.text.trim()} : ${row.valueController.text.trim()}\n';
       }
     }
 

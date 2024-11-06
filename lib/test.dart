@@ -32,12 +32,17 @@ class _TestState extends State<Test> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             try {
-              JsEvalResult jsResult =
-                  flutterJs.evaluate(editingController.text);
-              setState(() {
-                _jsResult = jsResult.stringResult;
-              });
-              print(jsResult.stringResult);
+              List<String> codeLines = editingController.text.split(';');
+
+              List<String> results = [];
+
+              for (String line in codeLines) {
+                if (line.trim().isNotEmpty) {
+                  JsEvalResult jsResult = flutterJs.evaluate(line);
+                  results.add(jsResult.stringResult);
+                }
+              }
+              print('RESULTS: $results');
             } on PlatformException catch (e) {
               print('ERROR: ${e.details}');
             }
