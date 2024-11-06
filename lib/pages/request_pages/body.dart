@@ -11,6 +11,8 @@ class Body extends StatefulWidget {
 
   @override
   State<Body> createState() => _BodyState();
+
+  var items = [];
 }
 
 class _BodyState extends State<Body> with AutomaticKeepAliveClientMixin {

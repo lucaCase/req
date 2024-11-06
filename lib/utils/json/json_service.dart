@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 class JsonService {
-  static String tryEncode(String value) {
+  static String tryDecode(String value) {
     try {
-      return jsonEncode(value.replaceAll("\n", ""));
+      print(jsonEncode(value));
+      return jsonEncode(value);
     } catch (e) {
       rethrow;
     }

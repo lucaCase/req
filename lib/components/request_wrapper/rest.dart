@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -13,7 +11,6 @@ import 'package:req/pages/request_pages/headers.dart';
 import 'package:req/pages/request_pages/params.dart';
 import 'package:req/pages/request_pages/scripts.dart';
 import 'package:req/pages/request_pages/tests.dart';
-import 'package:req/utils/methods/method_provider.dart';
 
 import '../../controller/key_store_controller.dart';
 import '../../pages/request_pages/body.dart';
@@ -180,20 +177,14 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
   }
 
   Future<http.Response> sendRequest(String url, String method) async {
-    var function = MethodProvider.getFunction(method);
     try {
-      if (method != "GET") {
-        print(jsonDecode(bodyController.text));
-        return http.Response("Ok", 200);
-        //return await function(
-        //Uri.parse(url), JsonService.tryEncode(bodyController.text));
-      } else {
-        try {
-          return await function(Uri.parse(url));
-        } catch (e) {
-          return http.Response("Error: $e", 500);
-        }
+      var request = http.Request(method, Uri.parse(url));
+      request.headers.addAll({"Content-Type": "application/json"});
+      if (bodyController.text.isNotEmpty) {
+        request.body = bodyController.text;
       }
+
+      return await request.send().then(http.Response.fromStream);
     } catch (e) {
       return http.Response("Error: $e", 500);
     }

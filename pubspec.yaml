@@ -49,6 +49,7 @@ dependencies:
   xml: ^6.5.0
   flutter_glow: ^0.3.2
   hover_widget: ^0.1.1
+  categorized_dropdown: ^1.0.0
 
 dev_dependencies:
   flutter_test:
