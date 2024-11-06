@@ -32,7 +32,8 @@ class _ResponseState extends State<Response> {
   void didUpdateWidget(covariant Response oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.res != null && widget.res != oldWidget.res) {
-      var contentType = widget.res!.response.headers["content-type"]!;
+      var contentType =
+          widget.res!.response.headers["content-type"] ?? "text/plain";
       var body = widget.res!.response.body;
       var (controllerText, _, _) =
           LanguageService.getLanguage(contentType, body);
@@ -60,7 +61,8 @@ class _ResponseState extends State<Response> {
     if (widget.res == null) {
       return const Center(child: CircularProgressIndicator());
     } else {
-      var contentType = widget.res!.response.headers["content-type"]!;
+      var contentType =
+          widget.res!.response.headers["content-type"] ?? "text/plain";
       var body = widget.res!.response.body;
       var (controllerText, languageString, languageMode) =
           LanguageService.getLanguage(contentType, body);

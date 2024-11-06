@@ -5,7 +5,9 @@ import 'package:re_highlight/languages/json.dart';
 import '../../components/code_editor_field.dart';
 
 class Body extends StatefulWidget {
-  const Body({super.key});
+  Body({super.key, required this.codeController});
+
+  CodeLineEditingController codeController;
 
   @override
   State<Body> createState() => _BodyState();
@@ -15,13 +17,11 @@ class _BodyState extends State<Body> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
-  CodeLineEditingController codeController = CodeLineEditingController();
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return CodeEditorField(
-      codeController: codeController,
+      codeController: widget.codeController,
       readOnly: false,
       languageString: "json",
       languageMode: langJson,

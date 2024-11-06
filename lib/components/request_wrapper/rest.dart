@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:re_editor/re_editor.dart';
 import 'package:req/components/buttons/default_text_icon_button.dart';
 import 'package:req/components/dropdown_input/dropdown_input.dart';
 import 'package:req/components/request_wrapper/response.dart';
@@ -44,6 +47,7 @@ class Rest extends StatefulWidget {
 
 class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
   TextEditingController requestUrlController = TextEditingController();
+  CodeLineEditingController bodyController = CodeLineEditingController();
 
   String value = "GET";
 
@@ -113,7 +117,7 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
                         Params(
                           keyStoreController: keyStoreController,
                         ),
-                        Body(),
+                        Body(codeController: bodyController),
                         Headers(),
                         Auth(),
                         Scripts(),
@@ -169,7 +173,6 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
           baseUrl += "&";
         }
         baseUrl += "${row.keyController.text}=${row.valueController.text}";
-        print(baseUrl);
       }
     }
 
@@ -179,7 +182,18 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
   Future<http.Response> sendRequest(String url, String method) async {
     var function = MethodProvider.getFunction(method);
     try {
-      return await function(Uri.parse(url));
+      if (method != "GET") {
+        print(jsonDecode(bodyController.text));
+        return http.Response("Ok", 200);
+        //return await function(
+        //Uri.parse(url), JsonService.tryEncode(bodyController.text));
+      } else {
+        try {
+          return await function(Uri.parse(url));
+        } catch (e) {
+          return http.Response("Error: $e", 500);
+        }
+      }
     } catch (e) {
       return http.Response("Error: $e", 500);
     }
