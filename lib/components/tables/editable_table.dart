@@ -10,6 +10,7 @@ class EditableTable extends StatelessWidget {
     var keyStoreController = Provider.of<KeyStoreController>(context);
 
     return ReorderableListView.builder(
+        shrinkWrap: true,
         buildDefaultDragHandles: false,
         itemBuilder: (context, index) {
           return EditableTableRow(

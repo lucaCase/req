@@ -8,6 +8,7 @@
 - `text/javascript`
 - `application/javascript`
 - `text/csv`
+- `text/markdown`
 
 ## Application-Based Content Types
 
