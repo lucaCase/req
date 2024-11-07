@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:re_editor/re_editor.dart';
 
-import '../../components/tables/editable_table.dart';
+import '../../components/tables/editable_tables/editable_table.dart';
 import '../../components/text_area/bulk_text_area.dart';
 import '../../controller/key_store_controller.dart';
 

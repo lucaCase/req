@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:req/components/code_editor_field.dart';
-import 'package:req/components/tables/editable_table_row.dart';
 import 'package:req/utils/language/highlighting/bulk.dart';
+
+import '../tables/editable_tables/editable_table_row.dart';
 
 class BulkTextArea extends StatefulWidget {
   BulkTextArea({super.key, required this.elements, required this.controller});

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:req/components/tables/editable_table_row.dart';
 import 'package:toastification/toastification.dart';
+
+import '../components/tables/editable_tables/editable_table_row.dart';
 
 class KeyStoreController with ChangeNotifier {
   List<EditableTableRow> _rows = [

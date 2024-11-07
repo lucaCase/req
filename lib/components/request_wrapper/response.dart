@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:req/components/code_editor_field.dart';
 import 'package:req/components/request_wrapper/response_header.dart';
+import 'package:req/components/tables/header_table/header_table.dart';
 import 'package:req/components/tabs/tab_wrapper.dart';
 import 'package:req/dto/response_dto.dart';
 import 'package:req/utils/language/language_service.dart';
+
+import '../tables/header_table/header_table_row.dart';
 
 class Response extends StatefulWidget {
   Response({super.key, this.res, required this.show, required this.onClose});
@@ -20,7 +25,11 @@ class Response extends StatefulWidget {
 class _ResponseState extends State<Response> {
   late CodeLineEditingController codeController;
 
-  List<String> tabs = ["", "Raw", "Headers"];
+  List<String> tabs = [
+    "",
+    "Raw",
+    "Headers",
+  ];
 
   @override
   void initState() {
@@ -99,17 +108,14 @@ class _ResponseState extends State<Response> {
                   languageString: null,
                   languageMode: null,
                 ),
-                ListView.builder(
-                  itemCount: widget.res!.response.headers.length,
-                  itemBuilder: (context, index) {
-                    var key =
-                        widget.res!.response.headers.keys.elementAt(index);
-                    var value = widget.res!.response.headers[key]!;
-                    return ListTile(
-                      title: Text(key),
-                      subtitle: Text(value),
-                    );
-                  },
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: HeaderTable(
+                      header: jsonEncode(widget.res!.response.headers),
+                      rows: widget.res!.response.headers.entries
+                          .map((e) => HeaderTableRow(
+                              headerKey: e.key, headerValue: e.value))
+                          .toList()),
                 ),
               ]),
             ),

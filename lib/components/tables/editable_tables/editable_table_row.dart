@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:req/styles/table_row_styles.dart';
 
 class EditableTableRow extends StatefulWidget {
   EditableTableRow(
@@ -15,12 +16,6 @@ class EditableTableRow extends StatefulWidget {
 
   TextEditingController valueController = TextEditingController();
 
-  static const iBorder = OutlineInputBorder(
-    borderSide: BorderSide(color: Colors.black12, width: 0),
-    borderRadius: BorderRadius.zero,
-  );
-  static const textStyle = TextStyle(fontSize: 14);
-
   final Function onEnable;
   final VoidCallback onDelete;
   bool isEnabled;
@@ -31,17 +26,6 @@ class EditableTableRow extends StatefulWidget {
 }
 
 class _EditableTableRowState extends State<EditableTableRow> {
-  InputDecoration inputDecoration(String hintText) {
-    return InputDecoration(
-      isDense: true,
-      hintText: hintText,
-      hintStyle: const TextStyle(color: Colors.black54),
-      border: EditableTableRow.iBorder,
-      focusedBorder: EditableTableRow.iBorder,
-      enabledBorder: EditableTableRow.iBorder,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return KeyboardListener(
@@ -78,14 +62,14 @@ class _EditableTableRowState extends State<EditableTableRow> {
           ),
           Expanded(
             child: TextField(
-              style: EditableTableRow.textStyle,
+              style: textStyle,
               decoration: inputDecoration("Key"),
               controller: widget.keyController,
             ),
           ),
           Expanded(
             child: TextField(
-              style: EditableTableRow.textStyle,
+              style: textStyle,
               decoration: inputDecoration("Value"),
               controller: widget.valueController,
             ),
