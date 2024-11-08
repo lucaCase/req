@@ -1,6 +1,9 @@
+import 'package:drop_down_search_field/drop_down_search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:req/styles/table_row_styles.dart';
+
+import '../../../../utils/http_headers.dart';
 
 class EditableHeaderTableRow extends StatefulWidget {
   EditableHeaderTableRow(
@@ -60,10 +63,37 @@ class _EditableHeaderTableRowState extends State<EditableHeaderTableRow> {
               ),
             ),
             Expanded(
-              child: TextField(
-                style: textStyle,
-                decoration: inputDecoration("Header"),
-                controller: widget.keyController,
+              child: DropDownSearchField(
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: widget.keyController,
+                  style: textStyle,
+                  decoration: inputDecoration("Key"),
+                ),
+                suggestionsCallback: (pattern) {
+                  return headers
+                      .where((element) =>
+                          element.toLowerCase().contains(pattern.toLowerCase()))
+                      .toList();
+                },
+                onSuggestionSelected: (suggestion) {
+                  widget.keyController.text = suggestion;
+                },
+                itemBuilder: (BuildContext context, String itemData) {
+                  return ListTile(
+                    title: Text(itemData),
+                  );
+                },
+                displayAllSuggestionWhenTap: true,
+                layoutArchitecture: (items, scrollController) {
+                  return Container(
+                    height: 200,
+                    child: ListView(
+                      controller: scrollController,
+                      shrinkWrap: true,
+                      children: items.toList(),
+                    ),
+                  );
+                },
               ),
             ),
             Expanded(

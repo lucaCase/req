@@ -5,6 +5,7 @@ import 'package:re_editor/re_editor.dart';
 import 'package:req/components/buttons/default_text_icon_button.dart';
 import 'package:req/components/dropdown_input/dropdown_input.dart';
 import 'package:req/components/request_wrapper/response.dart';
+import 'package:req/components/tables/header_table/editable/editable_header_table_row.dart';
 import 'package:req/dto/response_dto.dart';
 import 'package:req/pages/request_pages/auth.dart';
 import 'package:req/pages/request_pages/headers.dart';
@@ -73,7 +74,8 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
                   width: 800,
                   child: DropdownInput(
                     onEnter: () {
-                      sendRequestToServer(keyStoreController);
+                      sendRequestToServer(
+                          keyStoreController, headerKeyStoreController.rows);
                     },
                     options: Rest.requestOptions,
                     controller: requestUrlController,
@@ -87,7 +89,8 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
                   height: 50,
                   child: DefaultTextIconButton(
                     onPressed: () {
-                      sendRequestToServer(keyStoreController);
+                      sendRequestToServer(
+                          keyStoreController, headerKeyStoreController.rows);
                     },
                     icon: const Icon(Icons.send, color: Colors.white),
                     label: const Text(
@@ -145,14 +148,15 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  void sendRequestToServer(ParamsKeyStoreController keyStoreController) {
+  void sendRequestToServer(ParamsKeyStoreController keyStoreController,
+      List<EditableHeaderTableRow> rows) {
     Stopwatch stopwatch = Stopwatch()..start();
     setState(() {
       res = null;
       showResponse = true;
     });
 
-    sendRequest(assembleUrl(keyStoreController), value).then((response) {
+    sendRequest(assembleUrl(keyStoreController), value, rows).then((response) {
       setState(() {
         res = ResponseDto(
             response: response, executionTime: stopwatch.elapsedMilliseconds);
@@ -181,14 +185,23 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
     return baseUrl;
   }
 
-  Future<http.Response> sendRequest(String url, String method) async {
+  Future<http.Response> sendRequest(
+      String url, String method, List<EditableHeaderTableRow> rows) async {
     try {
       var request = http.Request(method, Uri.parse(url));
       request.headers.addAll({"Content-Type": "application/json"});
       if (bodyController.text.isNotEmpty) {
         request.body = bodyController.text;
       }
-
+      for (var row in rows) {
+        if (row.isEnabled) {
+          if (row.keyController.text.isNotEmpty &&
+              row.valueController.text.isNotEmpty) {
+            request.headers
+                .addAll({row.keyController.text: row.valueController.text});
+          }
+        }
+      }
       return await request.send().then(http.Response.fromStream);
     } catch (e) {
       return http.Response("Error: $e", 500);
