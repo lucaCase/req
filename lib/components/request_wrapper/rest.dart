@@ -12,7 +12,8 @@ import 'package:req/pages/request_pages/params.dart';
 import 'package:req/pages/request_pages/scripts.dart';
 import 'package:req/pages/request_pages/tests.dart';
 
-import '../../controller/key_store_controller.dart';
+import '../../controller/header_key_store_controller.dart';
+import '../../controller/params_key_store_controller.dart';
 import '../../pages/request_pages/body.dart';
 
 class Rest extends StatefulWidget {
@@ -55,7 +56,9 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var keyStoreController = Provider.of<KeyStoreController>(context);
+    var keyStoreController = Provider.of<ParamsKeyStoreController>(context);
+    var headerKeyStoreController =
+        Provider.of<HeaderKeyStoreController>(context);
 
     return Center(
       child: Column(
@@ -115,7 +118,9 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
                           keyStoreController: keyStoreController,
                         ),
                         Body(codeController: bodyController),
-                        Headers(),
+                        Headers(
+                          keyStoreController: headerKeyStoreController,
+                        ),
                         Auth(),
                         Scripts(),
                         Tests()
@@ -140,7 +145,7 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  void sendRequestToServer(KeyStoreController keyStoreController) {
+  void sendRequestToServer(ParamsKeyStoreController keyStoreController) {
     Stopwatch stopwatch = Stopwatch()..start();
     setState(() {
       res = null;
@@ -155,7 +160,7 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
     });
   }
 
-  String assembleUrl(KeyStoreController keyStoreController) {
+  String assembleUrl(ParamsKeyStoreController keyStoreController) {
     String baseUrl = requestUrlController.text;
 
     for (var row in keyStoreController.rows) {

@@ -12,9 +12,9 @@ class EditableTableRow extends StatefulWidget {
       required this.onEnable,
       required this.index});
 
-  TextEditingController keyController = TextEditingController();
+  TextEditingController keyController;
 
-  TextEditingController valueController = TextEditingController();
+  TextEditingController valueController;
 
   final Function onEnable;
   final VoidCallback onDelete;

@@ -3,7 +3,7 @@ import 'package:toastification/toastification.dart';
 
 import '../components/tables/editable_tables/editable_table_row.dart';
 
-class KeyStoreController with ChangeNotifier {
+class ParamsKeyStoreController with ChangeNotifier {
   List<EditableTableRow> _rows = [
     EditableTableRow(
       index: 0,

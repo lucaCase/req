@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../controller/key_store_controller.dart';
+import '../../../controller/params_key_store_controller.dart';
 import 'editable_table_row.dart';
 
 class EditableTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var keyStoreController = Provider.of<KeyStoreController>(context);
+    var keyStoreController = Provider.of<ParamsKeyStoreController>(context);
 
     return ReorderableListView.builder(
         shrinkWrap: true,

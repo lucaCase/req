@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:req/controller/header_key_store_controller.dart';
 import 'package:req/pages/home.dart';
 import 'package:req/test.dart';
 import 'package:toastification/toastification.dart';
 
-import 'controller/key_store_controller.dart';
+import 'controller/params_key_store_controller.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-        create: (context) => KeyStoreController(), child: const MyApp()),
-  );
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => ParamsKeyStoreController()),
+      ChangeNotifierProvider(create: (context) => HeaderKeyStoreController())
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {

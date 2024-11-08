@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:req/components/tables/header_table/header_table_row.dart';
+
+import 'header_table_row.dart';
 
 class HeaderTable extends StatelessWidget {
   HeaderTable({super.key, required this.rows, required this.header});

@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:req/components/code_editor_field.dart';
 import 'package:req/components/request_wrapper/response_header.dart';
-import 'package:req/components/tables/header_table/header_table.dart';
+import 'package:req/components/tables/header_table/readonly/header_table.dart';
 import 'package:req/components/tabs/tab_wrapper.dart';
 import 'package:req/dto/response_dto.dart';
 import 'package:req/utils/language/language_service.dart';
 
-import '../tables/header_table/header_table_row.dart';
+import '../tables/header_table/readonly/header_table_row.dart';
 
 class Response extends StatefulWidget {
   Response({super.key, this.res, required this.show, required this.onClose});
