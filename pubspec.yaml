@@ -50,6 +50,8 @@ dependencies:
   flutter_glow: ^0.3.2
   hover_widget: ^0.1.1
   drop_down_search_field: ^1.0.6
+  fl_chart: ^0.69.0
+  hover_menu: ^1.1.1
 
 dev_dependencies:
   flutter_test:

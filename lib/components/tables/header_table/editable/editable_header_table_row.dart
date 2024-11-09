@@ -85,8 +85,8 @@ class _EditableHeaderTableRowState extends State<EditableHeaderTableRow> {
                 },
                 displayAllSuggestionWhenTap: true,
                 layoutArchitecture: (items, scrollController) {
-                  return Container(
-                    height: 200,
+                  return ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 200),
                     child: ListView(
                       controller: scrollController,
                       shrinkWrap: true,

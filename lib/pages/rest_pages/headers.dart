@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:req/components/tables/header_table/editable/editable_header_table.dart';
 import 'package:req/controller/header_key_store_controller.dart';
 
@@ -49,12 +50,28 @@ class _HeadersState extends State<Headers> with AutomaticKeepAliveClientMixin {
             )
           ],
         ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: 296),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: EditableHeaderTable(
-              headerKeyStoreController: widget.keyStoreController,
+        KeyboardListener(
+          onKeyEvent: (event) {
+            if (event is KeyDownEvent) {
+              bool isAltPressed = HardwareKeyboard.instance.isAltPressed;
+              bool isPlusPressed =
+                  event.logicalKey == LogicalKeyboardKey.equal ||
+                      event.logicalKey == LogicalKeyboardKey.equal;
+              if (isAltPressed && isPlusPressed) {
+                setState(() {
+                  widget.keyStoreController.addRow();
+                });
+              }
+            }
+          },
+          focusNode: FocusNode(),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 296),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: EditableHeaderTable(
+                headerKeyStoreController: widget.keyStoreController,
+              ),
             ),
           ),
         ),

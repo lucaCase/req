@@ -7,15 +7,15 @@ import 'package:req/components/dropdown_input/dropdown_input.dart';
 import 'package:req/components/request_wrapper/response.dart';
 import 'package:req/components/tables/header_table/editable/editable_header_table_row.dart';
 import 'package:req/dto/response_dto.dart';
-import 'package:req/pages/request_pages/auth.dart';
-import 'package:req/pages/request_pages/headers.dart';
-import 'package:req/pages/request_pages/params.dart';
-import 'package:req/pages/request_pages/scripts.dart';
-import 'package:req/pages/request_pages/tests.dart';
+import 'package:req/pages/rest_pages/auth.dart';
+import 'package:req/pages/rest_pages/headers.dart';
+import 'package:req/pages/rest_pages/params.dart';
+import 'package:req/pages/rest_pages/scripts.dart';
+import 'package:req/pages/rest_pages/tests.dart';
 
 import '../../controller/header_key_store_controller.dart';
 import '../../controller/params_key_store_controller.dart';
-import '../../pages/request_pages/body.dart';
+import '../../pages/rest_pages/body.dart';
 
 class Rest extends StatefulWidget {
   Rest({super.key}) {
@@ -47,6 +47,8 @@ class Rest extends StatefulWidget {
 class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
   TextEditingController requestUrlController = TextEditingController();
   CodeLineEditingController bodyController = CodeLineEditingController();
+  CodeLineEditingController scriptController = CodeLineEditingController();
+  CodeLineEditingController testController = CodeLineEditingController();
 
   String value = "GET";
 
@@ -125,8 +127,12 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
                           keyStoreController: headerKeyStoreController,
                         ),
                         Auth(),
-                        Scripts(),
-                        Tests()
+                        Scripts(
+                          controller: scriptController,
+                        ),
+                        Tests(
+                          controller: testController,
+                        )
                       ],
                     ),
                   ),
