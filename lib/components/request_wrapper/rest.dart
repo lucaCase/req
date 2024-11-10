@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_js/flutter_js.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:re_editor/re_editor.dart';
@@ -16,6 +17,7 @@ import 'package:req/pages/rest_pages/tests.dart';
 import '../../controller/header_key_store_controller.dart';
 import '../../controller/params_key_store_controller.dart';
 import '../../pages/rest_pages/body.dart';
+import '../tabs/tab_wrapper.dart';
 
 class Rest extends StatefulWidget {
   Rest({super.key}) {
@@ -36,7 +38,7 @@ class Rest extends StatefulWidget {
     "Headers",
     "Auth",
     "Scripts",
-    "Tests"
+    "Tests",
   ];
   List<Tab> tabs = [];
 
@@ -55,6 +57,13 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
   ResponseDto? res;
 
   bool showResponse = false;
+  late JavascriptRuntime flutterJs;
+
+  @override
+  void initState() {
+    super.initState();
+    flutterJs = getJavascriptRuntime();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,91 +73,92 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
         Provider.of<HeaderKeyStoreController>(context);
 
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+      child: Row(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: 800,
-                  child: DropdownInput(
-                    onEnter: () {
-                      sendRequestToServer(
-                          keyStoreController, headerKeyStoreController.rows);
-                    },
-                    options: Rest.requestOptions,
-                    controller: requestUrlController,
-                    onChanged: (value) => this.value = value,
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 800,
+                        child: DropdownInput(
+                          onEnter: () {
+                            sendRequestToServer(keyStoreController,
+                                headerKeyStoreController.rows);
+                          },
+                          options: Rest.requestOptions,
+                          controller: requestUrlController,
+                          onChanged: (value) => this.value = value,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        height: 50,
+                        child: DefaultTextIconButton(
+                          onPressed: () {
+                            sendRequestToServer(keyStoreController,
+                                headerKeyStoreController.rows);
+                          },
+                          icon: const Icon(Icons.send, color: Colors.white),
+                          label: const Text(
+                            "Send request",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: TabWrapper(
+                          tabContents: Rest.tabContent,
+                          tabBodies: [
+                            Params(
+                              keyStoreController: keyStoreController,
+                            ),
+                            Body(codeController: bodyController),
+                            Headers(
+                              keyStoreController: headerKeyStoreController,
+                            ),
+                            Auth(),
+                            Scripts(
+                              controller: scriptController,
+                            ),
+                            Tests(
+                              controller: testController,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Response(
+                        res: res,
+                        show: showResponse,
+                        onClose: () {
+                          setState(() {
+                            showResponse = false;
+                          });
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  height: 50,
-                  child: DefaultTextIconButton(
-                    onPressed: () {
-                      sendRequestToServer(
-                          keyStoreController, headerKeyStoreController.rows);
-                    },
-                    icon: const Icon(Icons.send, color: Colors.white),
-                    label: const Text(
-                      "Send request",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          DefaultTabController(
-            length: widget.tabs.length,
-            child: Flexible(
-              fit: FlexFit.tight,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: 1000,
-                    child: TabBar(tabs: widget.tabs),
-                  ),
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: TabBarView(
-                      children: [
-                        Params(
-                          keyStoreController: keyStoreController,
-                        ),
-                        Body(codeController: bodyController),
-                        Headers(
-                          keyStoreController: headerKeyStoreController,
-                        ),
-                        Auth(),
-                        Scripts(
-                          controller: scriptController,
-                        ),
-                        Tests(
-                          controller: testController,
-                        )
-                      ],
-                    ),
-                  ),
-                  Response(
-                    res: res,
-                    show: showResponse,
-                    onClose: () {
-                      setState(() {
-                        showResponse = false;
-                      });
-                    },
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
+          Text("HD")
         ],
       ),
     );
@@ -166,6 +176,16 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
       setState(() {
         res = ResponseDto(
             response: response, executionTime: stopwatch.elapsedMilliseconds);
+        if (response.statusCode != 200 || response.body.isEmpty) {
+          return;
+        }
+        if (scriptController.text.isEmpty) {
+          return;
+        }
+        String text = "let res = ${response.body};\n${scriptController.text}";
+        JsEvalResult result = flutterJs.evaluate(text);
+        print(result.stringResult);
+        flutterJs = getJavascriptRuntime();
       });
     });
   }
@@ -208,7 +228,12 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
           }
         }
       }
-      return await request.send().then(http.Response.fromStream);
+
+      var streamedResponse = await request.send();
+
+      return await http.Response.fromStream(streamedResponse);
+    } on http.ClientException catch (e) {
+      return http.Response("Timeout: $e", 408);
     } catch (e) {
       return http.Response("Error: $e", 500);
     }

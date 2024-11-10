@@ -23,6 +23,7 @@ class _TestState extends State<Test> {
   void initState() {
     super.initState();
     flutterJs = getJavascriptRuntime();
+    flutterJs.evaluate('let a = 5');
   }
 
   @override
