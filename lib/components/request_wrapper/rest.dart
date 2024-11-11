@@ -52,6 +52,8 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
   CodeLineEditingController scriptController = CodeLineEditingController();
   CodeLineEditingController testController = CodeLineEditingController();
 
+  String _jsResult = '';
+
   String value = "GET";
 
   ResponseDto? res;
@@ -158,7 +160,21 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
               ],
             ),
           ),
-          Text("HD")
+          Positioned(
+            child: Card(
+              child: Container(
+                width: 400,
+                height: 400,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Text(_jsResult),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -182,10 +198,13 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
         if (scriptController.text.isEmpty) {
           return;
         }
+        flutterJs = getJavascriptRuntime();
+        flutterJs.onMessage("luca", (args) {
+          print("JS MESSAGE: $args");
+        });
         String text = "let res = ${response.body};\n${scriptController.text}";
         JsEvalResult result = flutterJs.evaluate(text);
-        print(result.stringResult);
-        flutterJs = getJavascriptRuntime();
+        _jsResult = result.stringResult;
       });
     });
   }

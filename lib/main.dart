@@ -5,6 +5,7 @@ import 'package:req/pages/home.dart';
 import 'package:req/test.dart';
 import 'package:toastification/toastification.dart';
 
+import 'console_test.dart';
 import 'controller/params_key_store_controller.dart';
 
 void main() {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
   static const String homeRoute = '/';
   static const String testRoute = '/test';
   static const String tabTestRoute = '/tabTest';
+  static const String consoleTestRoute = '/consoleTest';
 
   const MyApp({super.key});
 
@@ -41,11 +43,12 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        initialRoute: homeRoute,
+        initialRoute: consoleTestRoute,
         routes: {
           homeRoute: (context) => Home(),
           testRoute: (context) => const Test(),
           //tabTestRoute: (context) => TabsTest(),
+          consoleTestRoute: (context) => ConsoleTest(),
         },
       ),
     );
