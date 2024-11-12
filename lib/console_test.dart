@@ -4,6 +4,7 @@ import 'package:flutter_js/flutter_js.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:re_highlight/languages/javascript.dart';
 import 'package:req/components/code_editor_field.dart';
+import 'package:req/components/tests/test_wrapper.dart';
 import 'package:req/dto/test_dto.dart';
 
 class ConsoleTest extends StatefulWidget {
@@ -22,6 +23,8 @@ class _ConsoleTestState extends State<ConsoleTest> {
   @override
   void initState() {
     flutterJs = initializeJavascriptRuntime();
+    controller.text =
+        "assertThat(1, 1, '1 equals 1');\nassertThat(1, 2, '1 equals 2');";
     super.initState();
   }
 
@@ -50,30 +53,7 @@ class _ConsoleTestState extends State<ConsoleTest> {
               languageString: "javascript",
               readOnly: false,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: results.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: results[index].actual == results[index].expected
-                          ? Colors.green.shade100
-                          : Colors.red.shade100,
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey.shade300,
-                        ),
-                      ),
-                    ),
-                    child: ListTile(
-                      title: Text(results[index].testCase),
-                      subtitle: Text(
-                          "Actual: ${results[index].actual}, Expected: ${results[index].expected}"),
-                    ),
-                  );
-                },
-              ),
-            ),
+            SingleChildScrollView(child: TestWrapper(cases: results)),
           ],
         ));
   }
