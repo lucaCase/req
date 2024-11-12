@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        initialRoute: consoleTestRoute,
+        initialRoute: homeRoute,
         routes: {
           homeRoute: (context) => Home(),
           testRoute: (context) => const Test(),

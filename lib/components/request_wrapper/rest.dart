@@ -160,21 +160,6 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
               ],
             ),
           ),
-          Positioned(
-            child: Card(
-              child: Container(
-                width: 400,
-                height: 400,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Text(_jsResult),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
