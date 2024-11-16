@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:req/styles/table_row_styles.dart';
 
-import '../../../../utils/http_headers.dart';
+import '../../../../utils/networking/http/http_headers.dart';
 
 class EditableHeaderTableRow extends StatefulWidget {
   EditableHeaderTableRow(

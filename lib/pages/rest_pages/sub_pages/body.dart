@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:re_editor/re_editor.dart';
 import 'package:re_highlight/languages/json.dart';
 
-import '../../components/code_editor_field.dart';
+import '../../../components/code_editor_field.dart';
 
 class Body extends StatefulWidget {
   Body({super.key, required this.codeController});
