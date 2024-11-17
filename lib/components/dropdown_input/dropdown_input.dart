@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:req/utils/colors/color_service.dart';
 
 class DropdownInput extends StatefulWidget {
   DropdownInput({
@@ -18,7 +19,9 @@ class DropdownInput extends StatefulWidget {
         value: options[i],
         child: Text(
           options[i],
-          style: TextStyle(color: colors[i % colors.length]),
+          style: TextStyle(
+              color:
+                  ColorService.colorsList[i % ColorService.colorsList.length]),
         ),
       ));
     }
@@ -30,19 +33,6 @@ class DropdownInput extends StatefulWidget {
   final List<DropdownMenuItem<String>> entries = [];
   final ValueChanged<String> onChanged;
   final VoidCallback onEnter;
-
-  static const List<Color> colors = [
-    Colors.green,
-    Colors.red,
-    Colors.blue,
-    Colors.yellow,
-    Colors.purple,
-    Colors.orange,
-    Colors.pink,
-    Colors.teal,
-    Colors.indigo,
-    Colors.cyan,
-  ];
 
   @override
   State<DropdownInput> createState() => _DropdownInputState();
