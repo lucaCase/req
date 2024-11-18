@@ -52,6 +52,7 @@ dependencies:
   drop_down_search_field: ^1.0.6
   fl_chart: ^0.69.0
   hover_menu: ^1.1.1
+  contextmenu: ^3.0.0
 
 
 dev_dependencies:

@@ -20,11 +20,17 @@ class CollectionSelectionHeader extends StatelessWidget {
       child: Row(
         children: [
           CollectionIconButton(
-              onPressed: () {}, icon: Icons.folder_special_outlined),
+              tooltip: 'New Collection',
+              onPressed: () {},
+              icon: Icons.folder_special_outlined),
           CollectionIconButton(
-              onPressed: () {}, icon: Icons.folder_delete_outlined),
+              tooltip: 'Delete Collection',
+              onPressed: () {},
+              icon: Icons.folder_delete_outlined),
           CollectionIconButton(
-              onPressed: () {}, icon: Icons.collections_bookmark_outlined),
+              tooltip: "New File",
+              onPressed: () {},
+              icon: Icons.collections_bookmark_outlined),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
