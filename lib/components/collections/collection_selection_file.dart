@@ -12,12 +12,14 @@ class CollectionSelectionFile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       dense: true,
-      hoverColor: Colors.brown,
       leading: Text(
         request.method,
         style: TextStyle(color: ColorService.colorsMap[request.method]),
       ),
       title: Text(request.name),
+      onTap: () {
+        print("Request: ${request.name}");
+      },
     );
   }
 }
