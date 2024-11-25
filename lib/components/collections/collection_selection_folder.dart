@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:req/components/collections/collection_selection_file.dart';
 import 'package:req/components/context_menus/folder_context_menu.dart';
 import 'package:req/dto/collection_dto.dart';
@@ -28,6 +29,8 @@ class CollectionSelectionFolder extends StatefulWidget {
 
 class _CollectionSelectionFolderState extends State<CollectionSelectionFolder> {
   final ExpansionTileController _controller = ExpansionTileController();
+
+  FocusNode focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -124,17 +127,24 @@ class _CollectionSelectionFolderState extends State<CollectionSelectionFolder> {
     setState(() {
       (widget.collection as CollectionDto).files.add(
           RequestDto(name: "Request ${coll.files.length + 1}", method: "GET"));
-      _controller.expand();
     });
     Navigator.of(context).pop();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.expand();
+    });
   }
 
   onAddedCollection(context, coll) {
     setState(() {
       (widget.collection as CollectionDto).files.add(CollectionDto(
           name: "Collection ${coll.files.length + 1}", files: []));
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.expand();
     });
+
     Navigator.of(context).pop();
   }
 
@@ -165,7 +175,7 @@ class _CollectionSelectionFolderState extends State<CollectionSelectionFolder> {
       });
     }
 
-    _controller.expand();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _controller.expand());
 
     Navigator.of(context).pop();
   }
@@ -176,18 +186,29 @@ class _CollectionSelectionFolderState extends State<CollectionSelectionFolder> {
         context: context,
         builder: (context) {
           TextEditingController controller = TextEditingController();
+          controller.text = coll.name;
+          controller.selection = TextSelection(
+              baseOffset: 0, extentOffset: controller.text.length);
 
           return AlertDialog(
             title: Text("Rename ${coll.name}"),
-            content: TextFormField(
-              controller: controller,
+            content: KeyboardListener(
+              focusNode: focusNode,
+              onKeyEvent: (event) {
+                if (event is KeyDownEvent) {
+                  if (event.logicalKey == LogicalKeyboardKey.enter) {
+                    _handleSubmission(context, controller.text);
+                  }
+                }
+              },
+              child: TextFormField(
+                autofocus: true,
+                controller: controller,
+              ),
             ),
             actions: [
               TextButton(
-                  onPressed: () {
-                    widget.renameCallback(controller.text);
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: () => _handleSubmission(context, controller.text),
                   child: const Text("Rename")),
               TextButton(
                   onPressed: () => {Navigator.of(context).pop()},
@@ -195,5 +216,10 @@ class _CollectionSelectionFolderState extends State<CollectionSelectionFolder> {
             ],
           );
         });
+  }
+
+  _handleSubmission(context, text) {
+    widget.renameCallback(text);
+    Navigator.of(context).pop();
   }
 }

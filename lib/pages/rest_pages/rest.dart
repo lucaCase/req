@@ -8,6 +8,7 @@ import 'package:req/components/buttons/default_text_icon_button.dart';
 import 'package:req/components/dropdown_input/dropdown_input.dart';
 import 'package:req/components/request_wrapper/response.dart';
 import 'package:req/components/tables/header_table/editable/editable_header_table_row.dart';
+import 'package:req/dto/request_dto.dart';
 import 'package:req/dto/response_dto.dart';
 import 'package:req/pages/rest_pages/sub_pages/auth.dart';
 import 'package:req/pages/rest_pages/sub_pages/headers.dart';
@@ -234,7 +235,7 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
               ),
             ),
             suggestionsCallback: (String pattern) {
-              return CollectionService.collectionNames
+              return CollectionService.collectionNames()
                   .where((element) =>
                       element.toLowerCase().contains(pattern.toLowerCase()))
                   .toList();
@@ -267,7 +268,9 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
                 child: const Text("Cancel")),
             TextButton(
                 onPressed: () {
-                  saveToCollection(collectionNameController.text);
+                  setState(() {
+                    saveToCollection(collectionNameController.text);
+                  });
                   Navigator.pop(context);
                 },
                 child: const Text("Save"))
@@ -277,7 +280,15 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  void saveToCollection(String name) {
-    print("Saved file: $name");
+  void saveToCollection(String collectionName) {
+    CollectionService.saveRequest(
+        collectionName,
+        RequestDto(
+            name: collectionName,
+            method: value,
+            url: requestUrlController.text,
+            body: bodyController.text,
+            script: scriptController.text,
+            test: testController.text));
   }
 }

@@ -7,11 +7,14 @@ import '../../dto/request_dto.dart';
 
 class CollectionSelectionHeader extends StatelessWidget {
   CollectionSelectionHeader(
-      {super.key, required this.controller, required this.onAdded});
+      {super.key,
+      required this.controller,
+      required this.onAdded,
+      required this.onFilterChanged});
 
   final TextEditingController controller;
-
   final ValueChanged<FileDto> onAdded;
+  final ValueChanged<String> onFilterChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +36,6 @@ class CollectionSelectionHeader extends StatelessWidget {
               },
               icon: Icons.folder_special_outlined),
           CollectionIconButton(
-              tooltip: 'Delete Collection',
-              onPressed: () {},
-              icon: Icons.folder_delete_outlined),
-          CollectionIconButton(
               tooltip: "New Request",
               onPressed: () {
                 onAdded(RequestDto(name: 'New Request', method: 'GET'));
@@ -46,10 +45,13 @@ class CollectionSelectionHeader extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: TextFormField(
+                onChanged: (value) {
+                  onFilterChanged(value);
+                },
                 controller: controller,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.search),
-                  hintText: 'Search',
+                  hintText: 'Search in root',
                   hintStyle: TextStyle(color: Colors.black54),
                   border: InputBorder.none,
                 ),
