@@ -19,10 +19,10 @@ import 'package:req/utils/collections/collection_service.dart';
 import 'package:req/utils/networking/requests/request_service.dart';
 import 'package:req/utils/networking/url/url_service.dart';
 
+import '../../components/tabs/tab_wrapper.dart';
 import '../../controller/header_key_store_controller.dart';
 import '../../controller/params_key_store_controller.dart';
 import 'sub_pages/body.dart';
-import '../../components/tabs/tab_wrapper.dart';
 
 class Rest extends StatefulWidget {
   Rest({super.key}) {
@@ -80,10 +80,10 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
     var headerKeyStoreController =
         Provider.of<HeaderKeyStoreController>(context);
 
-    return KeyboardListener(
+    return Focus(
       focusNode: node,
       autofocus: true,
-      onKeyEvent: (event) {
+      onKeyEvent: (node, event) {
         if (event is KeyDownEvent) {
           if (HardwareKeyboard.instance.logicalKeysPressed
                   .contains(LogicalKeyboardKey.controlLeft) &&
@@ -91,6 +91,7 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
             openSaveDialogue();
           }
         }
+        return KeyEventResult.handled;
       },
       child: Center(
         child: Row(
