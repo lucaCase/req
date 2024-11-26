@@ -18,30 +18,36 @@ class _CollectionSelectionSystemState extends State<CollectionSelectionSystem> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        child: ListView.builder(
-      itemBuilder: (context, index) {
-        return CollectionSelectionFolder(
-          collection: widget.collections[index],
-          renameCallback: (newName) {
-            setState(() {
-              widget.collections[index].name = newName;
-            });
-          },
-          deleteCallback: () {
-            setState(() {
-              widget.collections.removeAt(index);
-            });
-          },
-          onDuplicate: () {
-            setState(() {
-              FileDto collection = widget.collections[index];
-              widget.collections.insert(index + 1,
-                  collection.copyWith(name: "${collection.name} copy"));
-            });
-          },
-        );
-      },
-      itemCount: widget.collections.length,
-    ));
+        child: widget.collections.isEmpty
+            ? const Center(
+                child: Text("There are currently no collections"),
+              )
+            : ListView.builder(
+                itemBuilder: (context, index) {
+                  return CollectionSelectionFolder(
+                    collection: widget.collections[index],
+                    renameCallback: (newName) {
+                      setState(() {
+                        widget.collections[index].name = newName;
+                      });
+                    },
+                    deleteCallback: () {
+                      setState(() {
+                        widget.collections.removeAt(index);
+                      });
+                    },
+                    onDuplicate: () {
+                      setState(() {
+                        FileDto collection = widget.collections[index];
+                        widget.collections.insert(
+                            index + 1,
+                            collection.copyWith(
+                                name: "${collection.name} copy"));
+                      });
+                    },
+                  );
+                },
+                itemCount: widget.collections.length,
+              ));
   }
 }

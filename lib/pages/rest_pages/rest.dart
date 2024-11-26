@@ -235,7 +235,7 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
               ),
             ),
             suggestionsCallback: (String pattern) {
-              return CollectionService.collectionNames()
+              return CollectionService.getCollectionNames()
                   .where((element) =>
                       element.toLowerCase().contains(pattern.toLowerCase()))
                   .toList();
@@ -245,6 +245,10 @@ class _RestState extends State<Rest> with AutomaticKeepAliveClientMixin {
             },
             itemBuilder: (context, itemData) {
               return ListTile(
+                leading: const Icon(
+                  Icons.folder,
+                  color: Colors.blueGrey,
+                ),
                 title: Text(itemData.toString()),
               );
             },
